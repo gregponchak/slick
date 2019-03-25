@@ -51,6 +51,7 @@
                 centerMode: false,
                 centerPadding: '50px',
                 cssEase: 'ease',
+                clickAdvance: false, // Added by Greg Ponchak – 3/25/2019
                 customPaging: function(slider, i) {
                     return $('<button type="button" />').text(i + 1);
                 },
@@ -1415,6 +1416,42 @@
 
     };
 
+    /* Added by Greg Ponchak – 3/25/2019 */
+    Slick.prototype.initClickAdvanceEvents = function() {
+
+        var _ = this;
+
+        if (_.options.clickAdvance === true && _.slideCount > _.options.slidesToShow) {
+
+          // init click event
+          _.$slider.on( 'click',
+            function( e ) {
+
+              // get current slide width
+              var slideWidth = _.$slides.eq(_.currentSlide).width();
+
+              // check which half of slider is clicked
+              if ( e.offsetX > ( slideWidth / 2 ) ) {
+                _.changeSlide({
+                  data: {
+                      message: 'next'
+                  }
+                });
+              } else {
+                _.changeSlide({
+                  data: {
+                      message: 'previous'
+                  }
+                });
+              }
+
+            }
+          );
+
+        }
+
+    };
+
     Slick.prototype.initDotEvents = function() {
 
         var _ = this;
@@ -1460,6 +1497,9 @@
 
         _.initDotEvents();
         _.initSlideEvents();
+
+        /* Added by Greg Ponchak – 3/25/2019 */
+        _.initClickAdvanceEvents();
 
         _.$list.on('touchstart.slick mousedown.slick', {
             action: 'start'
